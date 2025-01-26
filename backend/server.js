@@ -114,6 +114,7 @@ io.on('connection', socket => {
             io.to(room).emit('broadcastNewQuestion', game.questions[game.questionIndex]);
         }
     });
+});
 
 // Function to create a unique room name based on a random string or a timestamp
 const generateRoomName = () => {
