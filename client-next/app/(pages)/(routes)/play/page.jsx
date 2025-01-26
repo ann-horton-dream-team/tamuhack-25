@@ -38,6 +38,8 @@ const PlayPage = () => {
   };
 
 
+
+
   if (!token) {
     return <div className="flex items-center justify-center h-screen">Loading...</div>;
   }
@@ -61,7 +63,7 @@ const PlayPage = () => {
         serverUrl={serverUrl}
         data-lk-theme="default"
         style={{ height: '100vh' }}
-        
+        onDisconnected={console.log(1)}
       >
         <MyVideoConference />
         <RoomAudioRenderer />
@@ -77,7 +79,7 @@ function MyVideoConference() {
   // joins without a published camera track, a placeholder track is returned.
   const tracks = useTracks(
     [
-      { source: Track.Source.Camera, withPlaceholder: true },
+      { source: Track.Source.Camera},
     ],
     { onlySubscribed: false },
   );
