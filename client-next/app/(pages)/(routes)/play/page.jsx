@@ -1,37 +1,35 @@
 "use client";
-import React, { useState, useEffect, useRef } from "react";
-import { VideoConference, LiveKitRoom, GridLayout, ParticipantTile, TrackRefContext, RoomAudioRenderer, ControlBar, useTracks } from "@livekit/components-react";
-import { Track } from 'livekit-client';
-import '@livekit/components-styles';
+import React, { useState, useEffect, useRef } from "react"; // Add useRef here
+import { LiveKitRoom, RoomAudioRenderer } from "@livekit/components-react";
+import { MyVideoConference } from "@/components/ui/MyVideoConference";
+import { Timer } from "@/components/ui/timer";
+import { StartRecordingButton } from "@/components/ui/StartRecordingButton";
 
 const PlayPage = () => {
   const [token, setToken] = useState(null);
-  const [join, setJoin] = useState(false); // To control if the user has clicked the button
-  const [counter, setCounter] = useState(120);  // Set initial countdown to 120 seconds (2 minutes)
+  const [join, setJoin] = useState(false);
+  const [counter, setCounter] = useState(60);  // Set initial countdown to 120 seconds (2 minutes)
   const [isRecording, setIsRecording] = useState(false);
   const [audioBlob, setAudioBlob] = useState(null);
   const mediaRecorderRef = useRef(null);
+  const serverUrl = "wss://tamuhack-wuv40ylz.livekit.cloud";
 
-  const serverUrl = "wss://tamuhack-wuv40ylz.livekit.cloud"; // Replace with your LiveKit server URL
-
-  // Fetch token logic
   useEffect(() => {
     const fetchToken = async () => {
       try {
-        const response = await fetch("http://localhost:8000/getToken"); // Use GET method
+        const response = await fetch("http://localhost:8000/getToken"); 
         if (!response.ok) {
           throw new Error("Failed to fetch token");
         }
-
-        const data = await response.json(); // Parse response as JSON
-        setToken(data.token); // Store the JWT token
+        const data = await response.json();
+        setToken(data.token);
       } catch (error) {
         console.error("Error fetching token:", error);
       }
     };
 
     fetchToken();
-  }, []);  // Removed token dependency to prevent infinite loop
+  }, []);
 
   useEffect(() => {
     if (token) {
@@ -39,25 +37,23 @@ const PlayPage = () => {
     }
   }, [token]);
 
-  // Timer countdown logic
   useEffect(() => {
     let timer;
     if (join && counter > 0) {
       timer = setInterval(() => {
-        setCounter((prev) => prev - 1);  // Decrease counter by 1 every second
+        setCounter((prev) => prev - 1);
       }, 1000);
     } else if (counter === 0) {
-      // Redirect to results page when timer reaches 0
       stopRecording();
-      window.location.href = "/play"; // Use window.location to redirect to /results
+      window.location.href = "/play";
     }
 
-    return () => clearInterval(timer);  // Cleanup the timer on component unmount or if timer stops
+    return () => clearInterval(timer);
   }, [join, counter]);
 
   const startRecording = async () => {
     try {
-      setJoin(true);  // Set join to true when user clicks "Join Video Call"
+      setJoin(true); 
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       mediaRecorderRef.current = new MediaRecorder(stream);
       mediaRecorderRef.current.addEventListener('dataavailable', (event) => {
@@ -82,72 +78,35 @@ const PlayPage = () => {
   }
 
   return (
-    <div className="flex items-center justify-center h-screen">
+    <div className="flex items-center justify-center h-screen relative">
       {!join ? (
-        <div className="text-center">
-          <button
-            onClick={startRecording}
-            className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-all"
-          >
-            Join Video Call
-          </button>
-        </div>
+        <StartRecordingButton startRecording={startRecording} />
       ) : (
-        <LiveKitRoom
-          video={true}
-          audio={true}
-          token={token}
-          serverUrl={serverUrl}
-          style={{ 
-            position: 'absolute',
-            bottom: 0,
-            right: 0,
-            height: '100vh',  // 1/8th of the screen height
-            width: '35vw',   // 1/8th of the screen width
-          }}
-        >
-          <MyVideoConference />
-          <RoomAudioRenderer />
-          <div className="timer" style={{ color: 'black', fontSize: '2rem', fontWeight: 'bold', position:'absolute', top:100, right:25}}>
-            <p>Time remaining: {Math.floor(counter / 60)}:{counter % 60}</p> {/* Display timer in minutes:seconds */}
-          </div>
-        </LiveKitRoom>
+        <div>
+          <Timer counter={counter} />
+          <LiveKitRoom
+            video={true}
+            audio={true}
+            token={token}
+            serverUrl={serverUrl}
+            style={{
+              display: 'absolute',
+              bottom: 0,
+              right: 0,
+              height: '35vh',
+              width: '35vw',
+            }}
+          >
+            <div style={{display:'absolute'}}>
+            <MyVideoConference />
+            <RoomAudioRenderer />
+            </div>
+          </LiveKitRoom>
+        </div>
       )}
     </div>
   );
+  
 };
-
-function MyVideoConference() {
-  const tracks = useTracks(
-    [
-      { source: Track.Source.Camera },
-    ],
-    { onlySubscribed: false },
-  );
-  return (
-    <GridLayout
-      tracks={tracks}
-      style={{
-        position: 'absolute',
-        bottom: 0,
-        right: 0,
-        height: '35vh',  // 1/8th of the screen height
-        width: '35vw',   // 1/8th of the screen width
-      }}
-    >
-      <div style={{
-        display: 'flex',
-        flexDirection: 'column',  // Stack ParticipantTile and Control Panel vertically
-        justifyContent: 'flex-end',
-        alignItems: 'center',
-        height: '100%',  // Take full space of the GridLayout container
-        width: '100%',   // Full width of the container
-      }}>
-        <ParticipantTile style={{ flex: 1 }} />
-        <ControlBar variation='minimal' />
-      </div>
-    </GridLayout>
-  );
-}
 
 export default PlayPage;
