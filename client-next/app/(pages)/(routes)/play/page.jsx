@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { VideoConference, LiveKitRoom, GridLayout, ParticipantTile, TrackRefContext, RoomAudioRenderer, ControlBar, useTracks } from "@livekit/components-react";
-import { Track } from 'livekit-client';
+import { LocalParticipant, Track } from 'livekit-client';
 import '@livekit/components-styles';
 const PlayPage = () => {
   const [token, setToken] = useState(null);
@@ -61,6 +61,7 @@ const PlayPage = () => {
         serverUrl={serverUrl}
         data-lk-theme="default"
         style={{ height: '100vh' }}
+        
       >
         <MyVideoConference />
         <RoomAudioRenderer />
@@ -100,7 +101,7 @@ function MyVideoConference() {
     width: '100%',   // Full width of the container
   }}>
     <ParticipantTile style={{ flex: 1 }} />
-    <ControlBar variation='minimal' />
+    <ControlBar variation='minimal'/>
   </div>
 </GridLayout>
 
