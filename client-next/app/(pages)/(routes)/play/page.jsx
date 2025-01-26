@@ -120,7 +120,10 @@ const PlayPage = () => {
           <MyVideoConference />
           <RoomAudioRenderer />
           <div className="timer" style={{ color: 'black', fontSize: '2rem', fontWeight: 'bold', position:'absolute', top:100, right:25}}>
-            <p>Time remaining: {Math.floor(counter / 60)}:{counter % 60}</p> {/* Display timer in minutes:seconds */}
+          <p>
+            Time remaining: {String(Math.floor(counter / 60)).padStart(2, '0')}:
+            {String(counter % 60).padStart(2, '0')}
+          </p>
           </div>
         </LiveKitRoom>
       )}
