@@ -1,12 +1,22 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { VideoConference, LiveKitRoom, GridLayout, ParticipantTile, TrackRefContext, RoomAudioRenderer, ControlBar, useTracks } from "@livekit/components-react";
 import { Track } from 'livekit-client';
 import '@livekit/components-styles';
+
+
+
 const PlayPage = () => {
   const [token, setToken] = useState(null);
   const [join, setJoin] = useState(false); // To control if the user has clicked the button
   const [counter, setCounter] = useState(0);
+
+  const [isRecording, setIsRecording] = useState(false);
+  const [audioBlob, setAudioBlob] = useState(null);
+
+  const mediaRecorderRef = useRef(null);
+
+  
   const serverUrl = "wss://tamuhack-wuv40ylz.livekit.cloud"; // Replace with your LiveKit server URL
 
   useEffect(() => {
@@ -42,6 +52,28 @@ const PlayPage = () => {
     return <div className="flex items-center justify-center h-screen">Loading...</div>;
   }
 
+
+  const startRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      mediaRecorderRef.current = new MediaRecorder(stream);
+      mediaRecorderRef.current.addEventListener('dataavailable', (event) => {
+        setAudioBlob(event.data);
+      });
+      mediaRecorderRef.current.start();
+      setIsRecording(true);
+    } catch (error) {
+      console.error('Error accessing microphone:', error);
+    }
+  };
+
+  const stopRecording = () => {
+    if (mediaRecorderRef.current) {
+      mediaRecorderRef.current.stop();
+      setIsRecording(false);
+    }
+  };
+
   return (
     <div className="flex items-center justify-center h-screen">
       {!join ? (
@@ -67,6 +99,13 @@ const PlayPage = () => {
         
       </LiveKitRoom>
       )}
+    <div>
+      <button onClick={isRecording ? stopRecording : startRecording}>
+        {isRecording ? 'Stop Recording' : 'Start Recording'}
+      </button>
+      {/* Display recorded audio if available */}
+      {audioBlob && <audio controls src={URL.createObjectURL(audioBlob)} />}
+    </div>
     </div>
   );
 };
