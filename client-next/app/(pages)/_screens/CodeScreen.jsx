@@ -69,7 +69,8 @@ const CodeScreen = ({ question, setAnswer }) => {
   // Timer countdown logic
   useEffect(() => {
     let timer;
-    if (join && counter > 0) {
+    if (counter > 0) {
+      startRecording();
       timer = setInterval(() => {
         setCounter((prev) => prev - 1);  // Decrease counter by 1 every second
       }, 1000);
@@ -79,12 +80,11 @@ const CodeScreen = ({ question, setAnswer }) => {
     }
 
     return () => clearInterval(timer);  // Cleanup timer on unmount or timer stop
-  }, [join, counter]);
+  }, [counter]);
 
   // Start recording
   const startRecording = async () => {
     try {
-      setJoin(true);  // Set join to true when user clicks "Join Video Call"
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       mediaRecorderRef.current = new MediaRecorder(stream);
       mediaRecorderRef.current.addEventListener('dataavailable', (event) => {
