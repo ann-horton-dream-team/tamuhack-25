@@ -170,7 +170,7 @@ const CodeScreen = ({ question, setAnswer }) => {
             </div>
           ) : (
             <div className='flex items-start justify-start'>
-              <div className='bg-slate-900 rounded-md text-white w-full h-[400px] p-6 text-start'>{transcript}</div>
+              <div className='overflow-y-auto max-h-[390px] bg-slate-900 rounded-md text-white w-full h-[400px] p-6 text-start'>{transcript}</div>
             </div>
           )}
           <div className='flex items-start justify-start bg-slate-900 w-full max-h-[200px] rounded-3xl'>

@@ -33,7 +33,7 @@ export const Hero = () => {
                         <div className="text-6xl font-bold mt-8">
                             <Typewriter
                             options={{
-                            strings: ['Hello, World! Welcome to RaceCode.'],
+                            strings: ['Welcome to RaceCode.'],
                             autoStart: true,
                             pauseFor: 1000000,
                             loop: true,
