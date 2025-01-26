@@ -10,11 +10,11 @@ const MobileNavbar = () => {
     const { user } = useUser();
 
     return (
-        <div className='md:hidden fixed top-0 left-0 w-full py-5 px-6 bg-white z-50'>
+        <div className='md:hidden fixed text-white top-0 left-0 w-full py-5 px-6 z-50'>
             <div className='flex justify-between'>
                 <Link href='/'>
                     <p className='text-sm ml-3 mr-1'>
-                        <b>TAMUHack</b>
+                        <b>RaceCode</b>
                     </p>
                 </Link>
                 <Sheet>
@@ -25,7 +25,7 @@ const MobileNavbar = () => {
                         <SheetHeader>
                             <SheetTitle>
                                 <span className='text-sm mt-4'>
-                                    TAMUHack
+                                    RaceCode
                                 </span>
                             </SheetTitle>
                             <SheetDescription>

@@ -1,14 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { useUser } from "@clerk/nextjs";
 import Link from 'next/link'
+import Stars from "./Stars";
 
 export const Hero = () => {
     const { user } = useUser();
     return(
-        <div className="bg-black text-white bg-[linear-gradient(to_bottom,#0000,#200D42_34%,#4F21A1_65%,#A46EDB_82%)] relative overflow-clip ">
-            <img src='star.svg' className="z-10 absolute top-[80px] left-[700px] w-[25px] hidden lg:block" />
-            <img src='star.svg' className="z-10 absolute top-[150px] right-[200px] w-[30px]" />
-            <img src='star.svg' className="z-10 absolute top-[160px] left-[180px] w-[40px]" />
+        <div className="bg-black text-white bg-[linear-gradient(to_bottom,#0000,#200D42_34%,#4F21A1_65%,#A46EDB_82%)] relative overflow-clip">
+            <Stars />
             <div className="flex items-center justify-center relative min-h-screen">
                 {user ? (
                     <div className="text-center">
@@ -26,9 +25,7 @@ export const Hero = () => {
                     </div>
                 )}
             </div>
-            <div className = "absolute h-[375px] w-[130%] rounded-[100%] bg-black left-1/2 -translate-x-1/2 border border-[#B48CDE] bg-[radial-gradient(closest-side,#000000_82%,#9560EB)] top-[calc(100%-125px)]">
-
-            </div>
+            <div className = "absolute h-[375px] w-[130%] rounded-[100%] bg-black left-1/2 -translate-x-1/2 border border-[#B48CDE] bg-[radial-gradient(closest-side,#000000_82%,#9560EB)] top-[calc(100%-125px)]" />
         </div>
     );
 };

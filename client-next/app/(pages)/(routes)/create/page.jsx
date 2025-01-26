@@ -7,6 +7,8 @@ import React, { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import ShortUniqueId from 'short-unique-id';
 import { io } from 'socket.io-client'
+import Stars from '../../_components/Stars';
+
 
 const CreatePage = () => {
     const [title, setTitle] = useState("");
@@ -94,9 +96,16 @@ const CreatePage = () => {
     }
 
     return (
-        <div className='bg-black bg-[linear-gradient(to_bottom,#0000,#200D42_34%,#4F21A1_65%,#A46EDB_82%)] relative overflow-clip'>
+        <div className="bg-black bg-gradient-to-b from-black to-[#5D2CA8] relative overflow-clip ">
+            <Stars />
             {!code ? (
                 <div className='flex flex-col items-center justify-center text-center h-screen'>
+                    <div className='text-white font-bold text-6xl mb-6'>
+                        Create
+                    </div>
+                    <div className='text-white mb-10'>
+                        Generate a custom game for any leetcode topic.
+                    </div>
                     <input
                         className='px-28 py-3 text-center rounded-md m-2'
                         placeholder='Enter game title...'
@@ -127,8 +136,8 @@ const CreatePage = () => {
                             <SelectContent>
                                 <SelectItem value="arrays">Arrays</SelectItem>
                                 <SelectItem value="strings">Strings</SelectItem>
-                                <SelectItem value="linkedlists">Linked Lists</SelectItem>
-                                <SelectItem value="hashmaps">Hash Maps</SelectItem>
+                                <SelectItem value="linked lists">Linked Lists</SelectItem>
+                                <SelectItem value="hash maps">Hash Maps</SelectItem>
                                 <SelectItem value="trees">Trees</SelectItem>
                                 <SelectItem value="stacks">Stacks</SelectItem>
                                 <SelectItem value="queues">Queues</SelectItem>
@@ -142,6 +151,7 @@ const CreatePage = () => {
                     Game code: {code}
                 </div>
             )}
+            <div className="absolute h-[375px] w-[130%] rounded-[100%] bg-black left-1/2 -translate-x-1/2 border border-[#B48CDE] bg-[radial-gradient(closest-side,#000000_82%,#9560EB)] top-[calc(100%-125px)]" />
         </div>
     )
 }
