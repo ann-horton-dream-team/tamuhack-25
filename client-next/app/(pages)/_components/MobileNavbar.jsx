@@ -39,6 +39,9 @@ const MobileNavbar = () => {
                                     <Link href='/play'>
                                         <SheetClose>Play</SheetClose>
                                     </Link>
+                                    <Link href='/create'>
+                                        <SheetClose>Create</SheetClose>
+                                    </Link>
                                     {!user ? (
                                         <Link href='/sign-in'>
                                             <SheetClose>Log in</SheetClose>

@@ -9,7 +9,7 @@ export default {
   theme: {
   	extend: {
   		colors: {
-  			background: 'var(--background)',
+  			background: 'linear-gradient(to bottom, #0000, #200D42 34%, #4F21A1 65%, #A46EDB 82%)',
   			foreground: 'var(--foreground)'
   		},
   		borderRadius: {

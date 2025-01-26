@@ -38,6 +38,11 @@ const Navbar = () => {
                         Play
                     </Button>
                 </Link>
+                <Link href='/create'>
+                    <Button variant='secondary' className='hidden md:block mr-1'>
+                        Create
+                    </Button>
+                </Link>
                 <Link href='/dashboard'>
                     <Button variant='secondary' className='hidden md:block mr-1'>
                         Dashboard
