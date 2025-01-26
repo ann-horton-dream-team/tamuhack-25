@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { VideoConference, LiveKitRoom, GridLayout, ParticipantTile, TrackRefContext, RoomAudioRenderer, ControlBar, useTracks } from "@livekit/components-react";
 import { Track } from 'livekit-client';
 import '@livekit/components-styles';
+import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition'
 
 const PlayPage = () => {
   const [token, setToken] = useState(null);
@@ -11,6 +12,16 @@ const PlayPage = () => {
   const [isRecording, setIsRecording] = useState(false);
   const [audioBlob, setAudioBlob] = useState(null);
   const mediaRecorderRef = useRef(null);
+
+  const {
+    transcript,
+    listening,
+    resetTranscript,
+    browserSupportsSpeechRecognition
+  } = useSpeechRecognition({
+    continuous: true,
+    language: 'en-US'
+  });
 
   const serverUrl = "wss://tamuhack-wuv40ylz.livekit.cloud"; // Replace with your LiveKit server URL
 
@@ -113,7 +124,15 @@ const PlayPage = () => {
           </div>
         </LiveKitRoom>
       )}
+      <div className="p-10">
+        <p>Microphone: {listening ? 'on' : 'off'}</p>
+        <button onClick={SpeechRecognition.startListening} className="mx-10">Start</button>
+        <button onClick={SpeechRecognition.stopListening} className="mx-10">Stop</button>
+        <button onClick={resetTranscript}>Reset</button>
+        <p>{transcript}</p>
+      </div>
     </div>
+      
   );
 };
 
