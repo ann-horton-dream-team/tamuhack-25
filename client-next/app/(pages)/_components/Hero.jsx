@@ -19,8 +19,6 @@ export const Hero = () => {
                         <Button href='/play'className="m-8 px-12 transform hover:scale-110 transition-transform duration-300">Play<ArrowRight/></Button>
                     </Link>
                 </div>
-
-
                 ) : (
                     <div className="text-center">
                         
