@@ -181,37 +181,5 @@ const PlayPage = () => {
   );
 };
 
-function MyVideoConference() {
-  const tracks = useTracks(
-    [
-      { source: Track.Source.Camera },
-    ],
-    { onlySubscribed: false },
-  );
-  return (
-    <GridLayout
-      tracks={tracks}
-      style={{
-        position: 'absolute',
-        bottom: 0,
-        right: 0,
-        height: '35vh',  // 1/8th of the screen height
-        width: '35vw',   // 1/8th of the screen width
-      }}
-    >
-      <div style={{
-        display: 'flex',
-        flexDirection: 'column',  // Stack ParticipantTile and Control Panel vertically
-        justifyContent: 'flex-end',
-        alignItems: 'center',
-        height: '100%',  // Take full space of the GridLayout container
-        width: '100%',   // Full width of the container
-      }}>
-        <ParticipantTile style={{ flex: 1 }} />
-        <ControlBar variation='minimal' />
-      </div>
-    </GridLayout>
-  );
-}
 
 export default PlayPage;
