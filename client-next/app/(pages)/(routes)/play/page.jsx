@@ -1,24 +1,20 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
 import { VideoConference, LiveKitRoom, GridLayout, ParticipantTile, TrackRefContext, RoomAudioRenderer, ControlBar, useTracks } from "@livekit/components-react";
-import { LocalParticipant, Track } from 'livekit-client';
+import { Track } from 'livekit-client';
 import '@livekit/components-styles';
-
-
 
 const PlayPage = () => {
   const [token, setToken] = useState(null);
   const [join, setJoin] = useState(false); // To control if the user has clicked the button
-  const [counter, setCounter] = useState(0);
-
+  const [counter, setCounter] = useState(120);  // Set initial countdown to 120 seconds (2 minutes)
   const [isRecording, setIsRecording] = useState(false);
   const [audioBlob, setAudioBlob] = useState(null);
-
   const mediaRecorderRef = useRef(null);
 
-  
   const serverUrl = "wss://tamuhack-wuv40ylz.livekit.cloud"; // Replace with your LiveKit server URL
 
+  // Fetch token logic
   useEffect(() => {
     const fetchToken = async () => {
       try {
@@ -43,20 +39,25 @@ const PlayPage = () => {
     }
   }, [token]);
 
-  const handleJoin = () => {
-    setJoin(true); // Set join to true when the user clicks the button
-  };
+  // Timer countdown logic
+  useEffect(() => {
+    let timer;
+    if (join && counter > 0) {
+      timer = setInterval(() => {
+        setCounter((prev) => prev - 1);  // Decrease counter by 1 every second
+      }, 1000);
+    } else if (counter === 0) {
+      // Redirect to results page when timer reaches 0
+      stopRecording();
+      window.location.href = "/play"; // Use window.location to redirect to /results
+    }
 
-
-
-
-  if (!token) {
-    return <div className="flex items-center justify-center h-screen">Loading...</div>;
-  }
-
+    return () => clearInterval(timer);  // Cleanup the timer on component unmount or if timer stops
+  }, [join, counter]);
 
   const startRecording = async () => {
     try {
+      setJoin(true);  // Set join to true when user clicks "Join Video Call"
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       mediaRecorderRef.current = new MediaRecorder(stream);
       mediaRecorderRef.current.addEventListener('dataavailable', (event) => {
@@ -76,12 +77,16 @@ const PlayPage = () => {
     }
   };
 
+  if (!token) {
+    return <div className="flex items-center justify-center h-screen">Loading...</div>;
+  }
+
   return (
     <div className="flex items-center justify-center h-screen">
       {!join ? (
         <div className="text-center">
           <button
-            onClick={handleJoin}
+            onClick={startRecording}
             className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-all"
           >
             Join Video Call
@@ -89,63 +94,60 @@ const PlayPage = () => {
         </div>
       ) : (
         <LiveKitRoom
-        video={true}
-        audio={true}
-        token={token}
-        serverUrl={serverUrl}
-        data-lk-theme="default"
-        style={{ height: '100vh' }}
-        onDisconnected={console.log(1)}
-      >
-        <MyVideoConference />
-        <RoomAudioRenderer />
-        
-      </LiveKitRoom>
+          video={true}
+          audio={true}
+          token={token}
+          serverUrl={serverUrl}
+          style={{ 
+            position: 'absolute',
+            bottom: 0,
+            right: 0,
+            height: '100vh',  // 1/8th of the screen height
+            width: '35vw',   // 1/8th of the screen width
+          }}
+        >
+          <MyVideoConference />
+          <RoomAudioRenderer />
+          <div className="timer" style={{ color: 'black', fontSize: '2rem', fontWeight: 'bold', position:'absolute', top:100, right:25}}>
+            <p>Time remaining: {Math.floor(counter / 60)}:{counter % 60}</p> {/* Display timer in minutes:seconds */}
+          </div>
+        </LiveKitRoom>
       )}
-    <div>
-      <button onClick={isRecording ? stopRecording : startRecording}>
-        {isRecording ? 'Stop Recording' : 'Start Recording'}
-      </button>
-      {/* Display recorded audio if available */}
-      {audioBlob && <audio controls src={URL.createObjectURL(audioBlob)} />}
-    </div>
     </div>
   );
 };
 
 function MyVideoConference() {
-  // `useTracks` returns all camera and screen share tracks. If a user
-  // joins without a published camera track, a placeholder track is returned.
   const tracks = useTracks(
     [
-      { source: Track.Source.Camera},
+      { source: Track.Source.Camera },
     ],
     { onlySubscribed: false },
   );
   return (
-<GridLayout
-  tracks={tracks}
-  style={{
-    position: 'absolute',
-    bottom: 0,
-    right: 0,
-    height: '35vh',  // 1/8th of the screen height
-    width: '35vw',   // 1/8th of the screen width
-  }}
->
-  <div style={{
-    display: 'flex',
-    flexDirection: 'column',  // Stack ParticipantTile and Control Panel vertically
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-    height: '100%',  // Take full space of the GridLayout container
-    width: '100%',   // Full width of the container
-  }}>
-    <ParticipantTile style={{ flex: 1 }} />
-    <ControlBar variation='minimal'/>
-  </div>
-</GridLayout>
-
+    <GridLayout
+      tracks={tracks}
+      style={{
+        position: 'absolute',
+        bottom: 0,
+        right: 0,
+        height: '35vh',  // 1/8th of the screen height
+        width: '35vw',   // 1/8th of the screen width
+      }}
+    >
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',  // Stack ParticipantTile and Control Panel vertically
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+        height: '100%',  // Take full space of the GridLayout container
+        width: '100%',   // Full width of the container
+      }}>
+        <ParticipantTile style={{ flex: 1 }} />
+        <ControlBar variation='minimal' />
+      </div>
+    </GridLayout>
   );
 }
+
 export default PlayPage;
