@@ -6,6 +6,7 @@ import { useUser } from '@clerk/nextjs';
 import React, { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import ShortUniqueId from 'short-unique-id';
+import { io } from 'socket.io-client'
 
 const CreatePage = () => {
     const [title, setTitle] = useState("");
@@ -13,6 +14,7 @@ const CreatePage = () => {
     const [topic, setTopic] = useState("");
     const [rounds, setRounds] = useState("");
     const [disabled, setDisabled] = useState(false);
+    const [socket, setSocket] = useState(null);
 
     // Display on screen after game is generated
     const [code, setCode] = useState("");
@@ -32,6 +34,21 @@ const CreatePage = () => {
         setRounds(event.target.value);
     };
 
+    const updateRoom = (room) => {
+        socket.emit('join-room', room);
+    }
+    
+    useEffect(() => {
+        // Create the socket connection once
+        const socketConnection = io('http://localhost:8000');
+        setSocket(socketConnection);
+    
+        // Cleanup function to disconnect the socket when the component unmounts
+        return () => {
+          socketConnection.disconnect();
+        };
+      }, []);
+    
     const generateGame = async () => {
         if (!title || !difficulty || !topic || !rounds) return;
 
@@ -42,7 +59,7 @@ const CreatePage = () => {
         const userId = user?.id;
         const { randomUUID } = new ShortUniqueId({ dictionary: 'number', length: 7 });
         const gameId = randomUUID();
-
+        updateRoom(gameId);
         toast.success('Loading...');
 
         try {

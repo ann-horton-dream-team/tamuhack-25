@@ -22,7 +22,10 @@ let games = [];
 
 io.on('connection', socket => {
     console.log(`User joined: ${socket.id}`);
-
+    socket.on('join-room', room => {
+        socket.join(room);
+        console.log(room);
+    })
     socket.on('playerJoin', (room, questions) => {
         console.log(`User joined room: ${socket.id}`);
         socket.join(room);
