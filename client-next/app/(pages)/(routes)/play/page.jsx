@@ -64,7 +64,7 @@ const PlayPage = () => {
       >
         <MyVideoConference />
         <RoomAudioRenderer />
-        <ControlBar />
+        
       </LiveKitRoom>
       )}
     </div>
@@ -77,16 +77,33 @@ function MyVideoConference() {
   const tracks = useTracks(
     [
       { source: Track.Source.Camera, withPlaceholder: true },
-      { source: Track.Source.ScreenShare, withPlaceholder: false },
     ],
     { onlySubscribed: false },
   );
   return (
-    <GridLayout tracks={tracks} style={{ height: 'calc(100vh - var(--lk-control-bar-height))' }}>
-      {/* The GridLayout accepts zero or one child. The child is used
-      as a template to render all passed in tracks. */}
-      <ParticipantTile />
-    </GridLayout>
+<GridLayout
+  tracks={tracks}
+  style={{
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    height: '35vh',  // 1/8th of the screen height
+    width: '35vw',   // 1/8th of the screen width
+  }}
+>
+  <div style={{
+    display: 'flex',
+    flexDirection: 'column',  // Stack ParticipantTile and Control Panel vertically
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    height: '100%',  // Take full space of the GridLayout container
+    width: '100%',   // Full width of the container
+  }}>
+    <ParticipantTile style={{ flex: 1 }} />
+    <ControlBar variation='minimal' />
+  </div>
+</GridLayout>
+
   );
 }
 export default PlayPage;

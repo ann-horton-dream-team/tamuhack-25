@@ -33,7 +33,7 @@ io.on('connection', socket => {
 
 const createToken = async () => {
     const roomName = 'interview';
-    const participantName = 'quickstart-username';
+    const participantName = 'player';
     
 
     const at = new AccessToken(`APIaESJERDfgY2i`, `VOfv78FEoHlb8Ty7YyhsQd70MC7NzUxvMSEfcL4dbSk`, {
